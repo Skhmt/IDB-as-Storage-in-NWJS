@@ -1,6 +1,12 @@
 # IndexedDB-as-Storage-in-NWJS
 
-This takes the window object from nwjs context and puts it into a node module to use IndexedDB with or without a Worker in node context places. This lets you use your database in a non-nwjs context (unlike local/session Storage), is asynchronous, can be used in a worker, can store keys other than strings (maps, sets, blobs, imagedata, etc), and also wraps IndexedDB into a Storage-like API: setItem, getItem, removeItem, clear, and length.
+This takes the window object from nwjs context and puts it into a node module to use IndexedDB with or without a Worker in node context places. This lets comes with several advantages:
+* You can use your database in a non-nwjs context (once it is initialized in a nwjs context)
+* Asynchronous
+* Can be used in a worker (db-sw.js)
+* Can store keys other than strings (see: https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Structured_clone_algorithm)
+* Wraps IndexedDB into a Storage-like API: setItem, getItem, removeItem, clear, and length
+* Is faster than pouchDB because of a very simple IndexedDB implementation (according to http://nolanlawson.github.io/database-comparison/)
 
 You need a recent-ish version of NW.js to run this. No clue if it will work in versions older than 0.14.7.
 
@@ -40,5 +46,3 @@ You *need* to call init(window) from a nwjs context, but it only needs to be don
 There really isn't any good sharedWorker documentation that I could find. 
 
 If you create too many webWorkers, you can crash nw.js. Luckily, only once instance of sharedWorker is made.
-
-http://nolanlawson.github.io/database-comparison/ is neat
