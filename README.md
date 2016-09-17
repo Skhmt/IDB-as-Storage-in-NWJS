@@ -35,7 +35,7 @@ You *need* to call init(window) from a nwjs context, but it only needs to be don
 
 `db.removeItem(key, err => { if (err) console.error(err) })`
 
-`db.clear(err => {if (err) console.log(err) })`
+`db.clear(err => {if (err) console.error(err) })`
 
 `db.length((res, err) => { err ? console.error(err) : console.log(res) })`
 
