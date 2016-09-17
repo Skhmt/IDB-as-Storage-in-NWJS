@@ -18,7 +18,7 @@ Overall, I'd recommend db-sw.js because of the small actual performance penalty 
 
 Look at app.html for an actual implementation and test of db.js and db-sw.js
 
-`let db = require('./db.js')`
+`let db = require('./db.js')` or `let db = require('./db-sw.js')`
 
 `db.init(window, err => { /* do something when done */ })`
 You *need* to call init(window) from a nwjs context, but it only needs to be done once due to module caching in node.js. That means you can do something like `require('./db.js').init(window)` at the beginning of your app, then require it later in modules or in any other context and use it.
