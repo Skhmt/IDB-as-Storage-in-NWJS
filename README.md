@@ -38,3 +38,7 @@ You *need* to call init(window) from a nwjs context, but it only needs to be don
 `db.transaction(['data'], 'readwrite').objectStore('data')` is the biggest time sink and the reason why the Worker implementation is slower in large numbers of quick transactions. The transaction won't stay open for long enough to take multiple operations before it finishes, while in the non-worker implementation, it does stay open.
 
 There really isn't any good sharedWorker documentation that I could find. 
+
+If you create too many webWorkers, you can crash nw.js. Luckily, only once instance of sharedWorker is made.
+
+http://nolanlawson.github.io/database-comparison/ is neat
