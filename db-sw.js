@@ -1,12 +1,7 @@
 /*
   IndexedDB as asynchronous Storage for nw.js using a sharedWorker
 
-  https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API/Using_IndexedDB
-  https://developer.mozilla.org/en-US/docs/Web/API/Storage
-  https://googlechrome.github.io/samples/idb-getall/
-  window.indexedDB.deleteDatabase('dbName')
-
-  TODO: Implement .length, .key(), .clear()
+  TODO: Implement .key()
  */
 
   let exp = Object.create(null)

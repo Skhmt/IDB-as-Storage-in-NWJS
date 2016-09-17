@@ -1,11 +1,6 @@
 /*
   IndexedDB as asynchronous Storage for nw.js
 
-  https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API/Using_IndexedDB
-  https://developer.mozilla.org/en-US/docs/Web/API/Storage
-  https://googlechrome.github.io/samples/idb-getall/
-  http://nolanlawson.github.io/database-comparison/
-
   TODO: .key()
  */
 
