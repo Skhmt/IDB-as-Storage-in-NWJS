@@ -1,5 +1,5 @@
 /*
-  IndexedDB as asynchronous Storage for nw.js
+  IndexedDB as asynchronous Storage for NW.js
 
   TODO: .key()
  */
