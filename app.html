@@ -1,0 +1,119 @@
+<html>
+<body>
+  <img src="perfect-loop-lego.gif">
+  <div id="output">
+
+  </div>
+
+  <script>
+    function output(text) {
+      document.getElementById('output').innerHTML += text + '<br>'
+    }
+
+    /* Commands
+      db.setItem(key, value, (err) => { if (err) console.error(err) })
+      db.getItem(key, (res, err) => { err ? console.error(err) : console.log(res) })
+      db.removeItem(key, (err) => { if (err) console.error(err) })
+    */
+
+    let totalRuns = 100000
+    let db = require('./db.js')
+    let db_sw = require('./db-sw.js')
+
+    output('total runs: ' + totalRuns)
+
+    db.init(window, function (err) {
+      if (err) output(err)
+      normalTestSequential()
+    })
+
+    function normalTestSequential() {
+      let start = new Date().getTime()
+
+      function test(runNumber, runs) {
+        db.setItem('setItem' + runNumber, 'hello worker' + runNumber, function (err) {
+          if (err) console.error(err)
+          if (runNumber < runs) test(++runNumber, runs)
+          else {
+            let end = new Date().getTime()
+            output(`setItem sequentially: ${(end - start)/totalRuns}ms avg, ${end - start}ms total`)
+            setTimeout(normalTestParallel, 2000)
+          }
+        })
+      }
+      test(1,totalRuns)
+    }
+
+    function normalTestParallel() {
+      let totalComplete = 0
+
+      let start = new Date().getTime()
+      for (let i = 0; i < totalRuns; i++) {
+        db.setItem('parallelSetItem' + i, 'blah' + i, function (err) {
+          if (err) console.error(err)
+          totalComplete++
+          checkDone()
+        })
+      }
+
+      function checkDone() {
+        if (totalComplete === totalRuns) {
+          let end = new Date().getTime()
+          output(`setItem parallel: ${(end - start)/totalRuns}ms avg, ${end - start}ms total`)
+          setTimeout(swInit, 2000)
+        }
+      }
+    }
+
+    function swInit() {
+      let initStart = new Date().getTime()
+      db_sw.init(window, function (err) {
+        if (err) console.error(err)
+        let end = new Date().getTime()
+        output(`sharedWorker init time: ${end - initStart}ms`)
+        setTimeout(serviceTestSequential, 2000)
+      })
+    }
+
+    function serviceTestSequential() {
+      let start = new Date().getTime()
+
+      function test(runNumber) {
+        db_sw.setItem('swTest' + runNumber, 'hello sharedworker' + runNumber, function (err) {
+          console.log('sequential: ' + runNumber + '/' + totalRuns)
+          if (err) console.error(err)
+          if (runNumber < totalRuns) test(++runNumber)
+          else {
+            let end = new Date().getTime()
+            output(`sharedWorker setItem sequentially: ${(end - start)/totalRuns}ms avg, ${end - start}ms total`)
+            setTimeout(serviceTestParallel, 2000)
+          }
+        })
+      }
+      test(1)
+    }
+
+    function serviceTestParallel() {
+      let totalComplete = 0
+
+      let start = new Date().getTime()
+      for (let i = 0; i < totalRuns; i++) {
+        db_sw.setItem('swParallelSetItem' + i, 'blah' + i, function (err) {
+          if (err) console.error(err)
+          totalComplete++
+          checkDone(i)
+        })
+      }
+
+      function checkDone(run) {
+        console.log('parallel: ' + totalComplete + '/' + totalRuns)
+        if (totalComplete === totalRuns) {
+          let end = new Date().getTime()
+          output(`sharedWorker setItem parallel: ${(end - start)/totalRuns}ms avg, ${end - start}ms total`)
+        }
+      }
+    }
+
+  </script>
+</body>
+</html>

@@ -1,0 +1,8 @@
+{
+  "name": "IndexedDB Test",
+  "main": "app.html",
+  "window": {
+    "width": 420,
+    "height": 420
+  }
+}
