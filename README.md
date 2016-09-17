@@ -4,7 +4,7 @@ This takes the window object from the nwjs context and puts it into a node modul
 * You can use your database in a non-nwjs context (once it is initialized in a nwjs context)
 * Hundreds of MB of data instead of 5MB in localStorage
 * Asynchronous
-* Non-blocking when used in a worker (db-sw.js isntead of db.js)
+* Non-blocking when used in a worker (db-sw.js instead of db.js)
 * Can store keys other than strings (see: https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Structured_clone_algorithm)
 * Wraps IndexedDB into a Storage-like API: setItem, getItem, removeItem, clear, and length (key may be implemented later)
 * Is faster than pouchDB because of a very simple IndexedDB implementation (according to http://nolanlawson.github.io/database-comparison/)
