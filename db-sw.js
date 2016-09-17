@@ -1,5 +1,5 @@
 /*
-  IndexedDB as asynchronous Storage for nw.js using a sharedWorker
+  IndexedDB as asynchronous Storage for NW.js using a sharedWorker
 
   TODO: Implement .key()
  */
