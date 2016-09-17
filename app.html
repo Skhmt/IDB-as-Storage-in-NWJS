@@ -16,7 +16,7 @@
       db.removeItem(key, (err) => { if (err) console.error(err) })
     */
 
-    let totalRuns = 100000
+    let totalRuns = 1000
     let db = require('./db.js')
     let db_sw = require('./db-sw.js')
 
@@ -24,10 +24,10 @@
 
     db.init(window, function (err) {
       if (err) output(err)
-      normalTestSequential()
+      normalTestSync()
     })
 
-    function normalTestSequential() {
+    function normalTestSync() {
       let start = new Date().getTime()
 
       function test(runNumber, runs) {
@@ -36,20 +36,20 @@
           if (runNumber < runs) test(++runNumber, runs)
           else {
             let end = new Date().getTime()
-            output(`setItem sequentially: ${(end - start)/totalRuns}ms avg, ${end - start}ms total`)
-            setTimeout(normalTestParallel, 2000)
+            output(`setItem Sync: ${(end - start)/totalRuns}ms avg, ${end - start}ms total`)
+            setTimeout(normalTestAsync, 2000)
           }
         })
       }
       test(1,totalRuns)
     }
 
-    function normalTestParallel() {
+    function normalTestAsync() {
       let totalComplete = 0
 
       let start = new Date().getTime()
       for (let i = 0; i < totalRuns; i++) {
-        db.setItem('parallelSetItem' + i, 'blah' + i, function (err) {
+        db.setItem('AsyncSetItem' + i, 'blah' + i, function (err) {
           if (err) console.error(err)
           totalComplete++
           checkDone()
@@ -59,7 +59,7 @@
       function checkDone() {
         if (totalComplete === totalRuns) {
           let end = new Date().getTime()
-          output(`setItem parallel: ${(end - start)/totalRuns}ms avg, ${end - start}ms total`)
+          output(`setItem Async: ${(end - start)/totalRuns}ms avg, ${end - start}ms total`)
           setTimeout(swInit, 2000)
         }
       }
@@ -71,34 +71,34 @@
         if (err) console.error(err)
         let end = new Date().getTime()
         output(`sharedWorker init time: ${end - initStart}ms`)
-        setTimeout(serviceTestSequential, 2000)
+        setTimeout(serviceTestSync, 2000)
       })
     }
 
-    function serviceTestSequential() {
+    function serviceTestSync() {
       let start = new Date().getTime()
 
       function test(runNumber) {
         db_sw.setItem('swTest' + runNumber, 'hello sharedworker' + runNumber, function (err) {
-          console.log('sequential: ' + runNumber + '/' + totalRuns)
+          console.log('Sync: ' + runNumber + '/' + totalRuns)
           if (err) console.error(err)
           if (runNumber < totalRuns) test(++runNumber)
           else {
             let end = new Date().getTime()
-            output(`sharedWorker setItem sequentially: ${(end - start)/totalRuns}ms avg, ${end - start}ms total`)
-            setTimeout(serviceTestParallel, 2000)
+            output(`sharedWorker setItem Sync: ${(end - start)/totalRuns}ms avg, ${end - start}ms total`)
+            setTimeout(serviceTestAsync, 2000)
           }
         })
       }
       test(1)
     }
 
-    function serviceTestParallel() {
+    function serviceTestAsync() {
       let totalComplete = 0
 
       let start = new Date().getTime()
       for (let i = 0; i < totalRuns; i++) {
-        db_sw.setItem('swParallelSetItem' + i, 'blah' + i, function (err) {
+        db_sw.setItem('swAsyncSetItem' + i, 'blah' + i, function (err) {
           if (err) console.error(err)
           totalComplete++
           checkDone(i)
@@ -106,10 +106,10 @@
       }
 
       function checkDone(run) {
-        console.log('parallel: ' + totalComplete + '/' + totalRuns)
+        console.log('Async: ' + totalComplete + '/' + totalRuns)
         if (totalComplete === totalRuns) {
           let end = new Date().getTime()
-          output(`sharedWorker setItem parallel: ${(end - start)/totalRuns}ms avg, ${end - start}ms total`)
+          output(`sharedWorker setItem Async: ${(end - start)/totalRuns}ms avg, ${end - start}ms total`)
         }
       }
     }
