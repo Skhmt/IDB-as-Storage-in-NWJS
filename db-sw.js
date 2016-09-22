@@ -54,7 +54,7 @@
       else handleConnection()
 
       function handleConnection() {
-        port.addEventListener('message', function (e) {
+        port.onmessage = function (e) {
           if (e.data.action === 'set') {
             let objectStore = db.transaction(['data'], 'readwrite').objectStore('data')
             let request = objectStore.put({key: e.data.key, value: e.data.value})
@@ -112,11 +112,10 @@
           else {
             port.postMessage('invalid sharedWorker action')
           }
-        })
-        port.start()
-      }
-    }
-  }
+        } // port.onmessage
+      } //handleConnection()
+    } // onconnect
+  } // sharedWorkerCode
 
   exp.setItem = function (key, value, fn) {
     if (!setup) return console.error('Database not initialized')
@@ -127,6 +126,7 @@
         if (e.data) fn(e.data)
         else fn()
       }
+      sw.port.close()
     }
     sw.port.postMessage({action: 'set', key, value})
   }
@@ -140,6 +140,7 @@
         if (e.data.err) fn(null, e.data.err)
         else fn(e.data.res, null)
       }
+      sw.port.close()
     }
     sw.port.postMessage({action: 'get', key})
   }
@@ -153,6 +154,7 @@
         if (e.data) fn(e.data)
         else fn()
       }
+      sw.port.close()
     }
     sw.port.postMessage({action: 'remove', key})
   }
@@ -166,6 +168,7 @@
         if (e.data) fn(e.data)
         else fn()
       }
+      sw.port.close()
     }
     sw.port.postMessage({action: 'clear'})
   }
@@ -179,6 +182,7 @@
         if (e.data.err) fn(null, e.data.err)
         else fn(e.data.res, null)
       }
+      sw.port.close()
     }
     sw.port.postMessage({action: 'count'})
   }
