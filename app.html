@@ -10,7 +10,7 @@
       document.getElementById('output').innerHTML += text + '<br>'
     }
 
-    let totalRuns = 1000
+    let totalRuns = 100
     let db = require('./db.js')
     let db_sw = require('./db-sw.js')
 
@@ -22,15 +22,16 @@
     })
 
     function normalTestSync() {
-      let start = new Date().getTime()
+      let start = performance.now()
 
       function test(runNumber, runs) {
         db.setItem('setItem' + runNumber, 'hello worker' + runNumber, function (err) {
           if (err) console.error(err)
           if (runNumber < runs) test(++runNumber, runs)
           else {
-            let end = new Date().getTime()
-            output(`setItem Sync: ${(end - start)/totalRuns}ms avg, ${end - start}ms total`)
+            let end = performance.now()
+            let timer = ((end - start)/totalRuns).toFixed(3)
+            output(`setItem Sync: ${timer}ms avg, ${(end - start).toFixed(3)}ms total`)
             setTimeout(normalTestAsync, 2000)
           }
         })
@@ -41,7 +42,7 @@
     function normalTestAsync() {
       let totalComplete = 0
 
-      let start = new Date().getTime()
+      let start = performance.now()
       for (let i = 0; i < totalRuns; i++) {
         db.setItem('AsyncSetItem' + i, 'blah' + i, function (err) {
           if (err) console.error(err)
@@ -52,25 +53,26 @@
 
       function checkDone() {
         if (totalComplete === totalRuns) {
-          let end = new Date().getTime()
-          output(`setItem Async: ${(end - start)/totalRuns}ms avg, ${end - start}ms total`)
+          let end = performance.now()
+          let timer = ((end - start)/totalRuns).toFixed(3)
+          output(`setItem Async: ${timer}ms avg, ${(end - start).toFixed(3)}ms total`)
           setTimeout(swInit, 2000)
         }
       }
     }
 
     function swInit() {
-      let initStart = new Date().getTime()
+      let start = performance.now()
       db_sw.init(window, function (err) {
         if (err) console.error(err)
-        let end = new Date().getTime()
-        output(`sharedWorker init time: ${end - initStart}ms`)
+        let end = performance.now()
+        output(`sharedWorker init time: ${(end - start).toFixed(3)}ms`)
         setTimeout(serviceTestSync, 2000)
       })
     }
 
     function serviceTestSync() {
-      let start = new Date().getTime()
+      let start = performance.now()
 
       function test(runNumber) {
         db_sw.setItem('swTest' + runNumber, 'hello sharedworker' + runNumber, function (err) {
@@ -78,8 +80,9 @@
           if (err) console.error(err)
           if (runNumber < totalRuns) test(++runNumber)
           else {
-            let end = new Date().getTime()
-            output(`sharedWorker setItem Sync: ${(end - start)/totalRuns}ms avg, ${end - start}ms total`)
+            let end = performance.now()
+            let timer = ((end - start)/totalRuns).toFixed(3)
+            output(`sharedWorker setItem Sync: ${timer}ms avg, ${(end - start).toFixed(3)}ms total`)
             setTimeout(serviceTestAsync, 2000)
           }
         })
@@ -90,7 +93,7 @@
     function serviceTestAsync() {
       let totalComplete = 0
 
-      let start = new Date().getTime()
+      let start = performance.now()
       for (let i = 0; i < totalRuns; i++) {
         db_sw.setItem('swAsyncSetItem' + i, 'blah' + i, function (err) {
           if (err) console.error(err)
@@ -102,8 +105,9 @@
       function checkDone(run) {
         console.log('Async: ' + totalComplete + '/' + totalRuns)
         if (totalComplete === totalRuns) {
-          let end = new Date().getTime()
-          output(`sharedWorker setItem Async: ${(end - start)/totalRuns}ms avg, ${end - start}ms total`)
+          let end = performance.now()
+          let timer = ((end - start)/totalRuns).toFixed(3)
+          output(`sharedWorker setItem Async: ${timer}ms avg, ${(end - start).toFixed(3)}ms total`)
         }
       }
     }
