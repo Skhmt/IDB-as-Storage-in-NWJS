@@ -63,12 +63,12 @@ exp.getItem = function (key, fn) {
   }
   request.onsuccess = function () {
     if (typeof fn === 'function') {
-      if (request.result) fn(request.result.value)
+      if (request.result) fn(null, request.result.value)
       else fn(null, 'not found')
     }
   }
   request.onerror = function () {
-    if (typeof fn === 'function') fn(null, request.error)
+    if (typeof fn === 'function') fn(request.error, null)
   }
 }
 
@@ -109,10 +109,10 @@ exp.length = function(fn) {
   let objectStore = db.transaction(['data']).objectStore('data')
   let request = objectStore.count()
   request.onsuccess = function () {
-    if (typeof fn === 'function') fn(request.result)
+    if (typeof fn === 'function') fn(null, request.result)
   }
   request.onerror = function () {
-    if (typeof fn === 'function') fn(null, request.error)
+    if (typeof fn === 'function') fn(request.error, null)
   }
 }
 

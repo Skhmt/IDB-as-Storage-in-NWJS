@@ -137,8 +137,8 @@
     let sw = new window.SharedWorker(swSetURL)
     sw.port.onmessage = function (e) {
       if (typeof fn === 'function') {
-        if (e.data.err) fn(null, e.data.err)
-        else fn(e.data.res, null)
+        if (e.data.err) fn(e.data.err, null)
+        else fn(null, e.data.res)
       }
       sw.port.close()
     }
@@ -179,8 +179,8 @@
     let sw = new window.SharedWorker(swSetURL)
     sw.port.onmessage = function (e) {
       if (typeof fn === 'function') {
-        if (e.data.err) fn(null, e.data.err)
-        else fn(e.data.res, null)
+        if (e.data.err) fn(e.data.err, null)
+        else fn(null, e.data.res)
       }
       sw.port.close()
     }
