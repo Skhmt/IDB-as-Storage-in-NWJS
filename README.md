@@ -21,8 +21,6 @@ But you'll note that the setItem async (non-worker) operation *does* block the D
 
 Sync operations aren't actually synchronous, they're just doing the test where setItem is called, and when it finishes it runs the next setItem. Async just runs all the setItems immediately and handles them as they are finished. You can chnge the number of runs in app.html.
 
-Overall, I'd recommend db-sw.js over db.js because of the small actual performance penalty and the non-blocking nature of workers.
-
 ## Usage
 
 `let db = require('./db.js')` or `let db = require('./db-sw.js')`
